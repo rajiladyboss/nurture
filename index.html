@@ -6,17 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{
-    box-sizing: border-box;
-}
+*{ box-sizing:border-box; }
 
 html, body{
-    width: 100%;
-    height: auto;
-    min-height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-y: auto !important;
+    margin:0;
+    padding:0;
+    width:100%;
+    height:auto;
+    overflow-y:auto;
 }
 
 body{
@@ -25,18 +22,6 @@ body{
     color:#fff;
     padding:20px;
 }
-
-.game-box{
-    max-width:750px;
-    margin: 20px auto;
-    background:#020617;
-    padding:25px;
-    border-radius:14px;
-    height: auto !important;
-    min-height: unset !important;
-    overflow: visible !important;
-}
-
 
 .game-box{
     max-width:750px;
@@ -66,13 +51,7 @@ h1{
     transition:width 0.3s ease;
 }
 
-.question{
-    margin-bottom:25px;
-}
-
-.question h3{
-    margin-bottom:10px;
-}
+.question{ margin-bottom:25px; }
 
 .option{
     background:#1e293b;
@@ -91,8 +70,8 @@ button{
     cursor:pointer;
 }
 
-.primary{background:#22c55e;}
-.secondary{background:#475569;}
+.primary{ background:#22c55e; }
+.secondary{ background:#475569; }
 
 .result{
     display:none;
@@ -118,7 +97,7 @@ button{
     <div id="progressBar" class="progress-bar"></div>
 </div>
 
-<div>
+<div id="quiz">
 
 <div class="question">
 <h3>1️⃣ Enquiries source?</h3>
@@ -156,74 +135,68 @@ button{
 </div>
 
 <button type="button" class="primary" id="submitBtn">
-    Reveal My Growth Level
+Reveal My Growth Level
 </button>
+
 </div>
 
 <div id="result" class="result"></div>
-
 </div>
 
 <script>
-let answers = {};
-let score = 0;
-let level = "";
+let answers={}, score=0, level="";
+
+document.getElementById("submitBtn").addEventListener("click", showResult);
 
 function showResult(){
-    score = 0;
-    answers = {};
+    score=0;
+    answers={};
 
     for(let i=1;i<=5;i++){
-        let a = document.querySelector(`input[name=q${i}]:checked`);
+        let a=document.querySelector(`input[name=q${i}]:checked`);
         if(!a){
             alert("Please answer all questions");
             return;
         }
-        answers["q"+i] = a.value;
-        score += parseInt(a.value);
-        document.getElementById("progressBar").style.width = (i/5)*100 + "%";
+        answers["q"+i]=a.value;
+        score+=parseInt(a.value);
+        document.getElementById("progressBar").style.width=(i/5)*100+"%";
     }
 
-    const res = document.getElementById("result");
-    res.style.display = "block";
+    const res=document.getElementById("result");
+    res.style.display="block";
 
-    if(score <= 7){
-        level = "Survival Mode";
-        res.style.background = "#7f1d1d";
-        res.innerHTML = buildBlock(
-            "You are currently depending on luck, referrals, or inconsistent enquiries."
-        );
-    }
-    else if(score <= 11){
-        level = "Struggling Scale";
-        res.style.background = "#78350f";
-        res.innerHTML = buildBlock(
-            "You are trying hard, but without a structured marketing system."
-        );
-    }
+    if(score<=7){
+        level="Survival Mode";
+        res.style.background="#7f1d1d";
+        res.innerHTML=resultBlock("You are depending on luck, referrals, or inconsistent enquiries.");
+    } 
+    else if(score<=11){
+        level="Struggling Scale";
+        res.style.background="#78350f";
+        res.innerHTML=resultBlock("You are putting effort, but without a structured system.");
+    } 
     else{
-        level = "Scale Ready";
-        res.style.background = "#14532d";
-        res.innerHTML = `
+        level="Scale Ready";
+        res.style.background="#14532d";
+        res.innerHTML=`
             <div class="level">🟩 Scale Ready</div>
             <p>You already have a strong foundation.</p>
-            <p><b>Next focus:</b> Premium positioning & ROI optimisation.</p>
-            <p>👏 You’re ahead of most photographers.</p>
-        `;
+            <p>👏 You’re ahead of most photographers.</p>`;
         saveData("", "Scale Ready Viewed");
     }
 
     res.scrollIntoView({behavior:"smooth"});
 }
 
-function buildBlock(text){
+function resultBlock(text){
     saveData("", "Result Viewed");
     return `
         <div class="level">🎯 ${level}</div>
         <p>${text}</p>
         <p><b>Do you understand where you are stuck?</b></p>
 
-        <button class="primary" onclick="needSupport()">Yes, I need support for Digital Marketing</button>
+        <button class="primary" onclick="needSupport()">Yes, I need support</button>
         <button class="secondary" onclick="showObjections()">Not interested</button>
 
         <div id="obj" style="display:none;margin-top:15px;">
@@ -231,43 +204,36 @@ function buildBlock(text){
             <label><input type="radio" name="o" value="Budget issue"> Budget issue</label><br>
             <label><input type="radio" name="o" value="No trust"> Not trusting digital marketing</label><br>
             <label><input type="radio" name="o" value="Past failure"> Tried earlier, didn’t work</label><br>
-            <label><input type="radio" name="o" value="Not right time"> Not the right time</label><br>
-            <label><input type="radio" name="o" value="Exploring"> Just exploring</label><br>
+            <label><input type="radio" name="o" value="Not time"> Not the right time</label><br>
             <button class="primary" onclick="submitObjection()">Submit</button>
-        </div>
-    `;
+        </div>`;
 }
 
 function showObjections(){
-    document.getElementById("obj").style.display = "block";
+    document.getElementById("obj").style.display="block";
 }
 
 function submitObjection(){
-    let o = document.querySelector("input[name=o]:checked");
-    if(!o){
-        alert("Please select one option");
-        return;
-    }
-    saveData(o.value, "Objection Selected");
+    let o=document.querySelector("input[name=o]:checked");
+    if(!o){ alert("Select one option"); return; }
+    saveData(o.value,"Objection Selected");
     alert("Thanks for your honest response 🙏");
 }
 
 function needSupport(){
-    saveData("", "Need Support");
-    document.getElementById("result").innerHTML += `
+    saveData("","Need Support");
+    document.getElementById("result").innerHTML+=`
         <p style="margin-top:15px;color:#22c55e;">
-        ✅ Thanks! You’ve taken the first step toward growth.
+        ✅ Thanks! Our team will guide you further.
         </p>`;
 }
 
 function saveData(objection, action){
-    fetch("https://script.google.com/macros/s/AKfycbzm1vy6dNbFseArtLEa85uagAq927P_rpvM30d-uglzsA7aBJwaL9TdCz5ZTM1OlQHu/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
+    fetch("https://script.google.com/macros/s/AKfycbzm1vy6dNbFseArtLEa85uagAq927P_rpvM30d-uglzsA7aBJwaL9TdCz5ZTM1OlQHu/exec",{
+        method:"POST",
+        mode:"no-cors",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({
             ...answers,
             score,
             level,
@@ -276,15 +242,7 @@ function saveData(objection, action){
         })
     });
 }
-
-        })
-    });
-}
-document.getElementById("submitBtn").addEventListener("click", showResult);
 </script>
-<div style="height:600px;"></div>
-<p style="text-align:center;color:#94a3b8;">End of page test</p>
 
 </body>
 </html>
-<p style="margin-top:500px;">End of page test</p>
