@@ -118,7 +118,7 @@ button{
     <div id="progressBar" class="progress-bar"></div>
 </div>
 
-<form>
+<div>
 
 <div class="question">
 <h3>1️⃣ Enquiries source?</h3>
@@ -158,7 +158,7 @@ button{
 <button type="button" class="primary" id="submitBtn">
     Reveal My Growth Level
 </button>
-</form>
+</div>
 
 <div id="result" class="result"></div>
 
@@ -280,6 +280,7 @@ function saveData(objection, action){
         })
     });
 }
+document.getElementById("submitBtn").addEventListener("click", showResult);
 </script>
 <div style="height:600px;"></div>
 <p style="text-align:center;color:#94a3b8;">End of page test</p>
