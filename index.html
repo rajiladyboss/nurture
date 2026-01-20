@@ -57,4 +57,129 @@ button{
 
 <div class="question">
 <h3>2️⃣ Lead response time?</h3>
-<div class
+<div class="option"><input type="radio" name="q2" value="1"> Late</div>
+<div class="option"><input type="radio" name="q2" value="2"> 1–2 hours</div>
+<div class="option"><input type="radio" name="q2" value="3"> 10–30 mins</div>
+</div>
+
+<div class="question">
+<h3>3️⃣ After pricing?</h3>
+<div class="option"><input type="radio" name="q3" value="1"> Ghosted</div>
+<div class="option"><input type="radio" name="q3" value="2"> One follow-up</div>
+<div class="option"><input type="radio" name="q3" value="3"> Automation</div>
+</div>
+
+<div class="question">
+<h3>4️⃣ Ad strategy?</h3>
+<div class="option"><input type="radio" name="q4" value="1"> No ads</div>
+<div class="option"><input type="radio" name="q4" value="2"> Boosted</div>
+<div class="option"><input type="radio" name="q4" value="3"> Funnels</div>
+</div>
+
+<div class="question">
+<h3>5️⃣ Booking confidence?</h3>
+<div class="option"><input type="radio" name="q5" value="1"> Unpredictable</div>
+<div class="option"><input type="radio" name="q5" value="2"> Sometimes</div>
+<div class="option"><input type="radio" name="q5" value="3"> Predictable</div>
+</div>
+
+<button type="button" class="primary" onclick="showResult()">Reveal My Growth Level</button>
+</form>
+
+<div id="result" class="result"></div>
+</div>
+
+<script>
+let answers={}, score=0, level="";
+
+function showResult(){
+    score=0; answers={};
+    for(let i=1;i<=5;i++){
+        let a=document.querySelector(`input[name=q${i}]:checked`);
+        if(!a){alert("Complete all questions");return;}
+        answers["q"+i]=a.value;
+        score+=parseInt(a.value);
+        document.getElementById("progressBar").style.width=(i/5)*100+"%";
+    }
+
+    let res=document.getElementById("result");
+    res.style.display="block";
+
+    if(score<=7){
+        level="Survival Mode";
+        res.style.background="#7f1d1d";
+        res.innerHTML=commonBlock(
+            "You are depending on luck, referrals, and inconsistent enquiries."
+        );
+    }else if(score<=11){
+        level="Struggling Scale";
+        res.style.background="#78350f";
+        res.innerHTML=commonBlock(
+            "You are putting effort, but without systems or automation."
+        );
+    }else{
+        level="Scale Ready";
+        res.style.background="#14532d";
+        res.innerHTML=`
+            <div class="level">🟩 Scale Ready</div>
+            <p>You already have a strong foundation.</p>
+            <p><b>Next level:</b> Premium positioning & ROI-focused ads.</p>
+            <p>👏 Keep going. You are ahead of most photographers.</p>
+        `;
+        saveData("", "Scale Ready Viewed");
+    }
+}
+
+function commonBlock(text){
+    saveData("", "Result Viewed");
+    return `
+    <div class="level">🎯 ${level}</div>
+    <p>${text}</p>
+    <p><b>Do you understand where you are stuck?</b></p>
+    <button class="primary" onclick="needSupport()">Yes, I need support for Digital Marketing</button>
+    <button class="secondary" onclick="showObjections()">Not interested</button>
+    <div id="obj" style="display:none;margin-top:10px;">
+        <p><b>What’s stopping you?</b></p>
+        <label><input type="radio" name="o" value="Budget issue"> Budget issue</label><br>
+        <label><input type="radio" name="o" value="No trust"> Not trusting digital marketing</label><br>
+        <label><input type="radio" name="o" value="Past failure"> Tried earlier, didn’t work</label><br>
+        <label><input type="radio" name="o" value="Not right time"> Not the right time</label><br>
+        <label><input type="radio" name="o" value="Just exploring"> Just exploring</label><br>
+        <button class="primary" onclick="submitObjection()">Submit</button>
+    </div>`;
+}
+
+function showObjections(){
+    document.getElementById("obj").style.display="block";
+}
+
+function submitObjection(){
+    let o=document.querySelector("input[name=o]:checked");
+    if(!o){alert("Select one option");return;}
+    saveData(o.value,"Objection Selected");
+    alert("Thanks for your honest response 🙏");
+}
+
+function needSupport(){
+    saveData("","Need Support for Digital Marketing");
+    document.getElementById("result").innerHTML += `
+        <p style="margin-top:15px;color:#22c55e;">
+        ✅ Thanks for showing interest. Our team will reach out with guidance soon.
+        </p>`;
+}
+
+function saveData(objection,action){
+    fetch("https://script.google.com/macros/s/AKfycbzm1vy6dNbFseArtLEa85uagAq927P_rpvM30d-uglzsA7aBJwaL9TdCz5ZTM1OlQHu/exec",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            ...answers,
+            score, level,
+            objection, action
+        })
+    });
+}
+</script>
+
+</body>
+</html>
