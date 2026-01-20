@@ -11,32 +11,78 @@ body{
     background:#0f172a;
     color:#fff;
     padding:20px;
+    min-height:100vh;
+    overflow-y:auto;
 }
+
 .game-box{
     max-width:750px;
-    margin:auto;
+    margin:20px auto;
     background:#020617;
     padding:25px;
-    border-radius:12px;
+    border-radius:14px;
 }
-h1{text-align:center;color:#38bdf8;}
-.progress{background:#1e293b;border-radius:20px;overflow:hidden;margin:15px 0;}
-.progress-bar{height:10px;width:0%;background:#22c55e;}
-.question{margin-top:25px;}
-.option{background:#1e293b;padding:10px;margin-bottom:10px;border-radius:8px;}
+
+h1{
+    text-align:center;
+    color:#38bdf8;
+    margin-bottom:15px;
+}
+
+.progress{
+    background:#1e293b;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:20px;
+}
+
+.progress-bar{
+    height:10px;
+    width:0%;
+    background:#22c55e;
+    transition:width 0.3s ease;
+}
+
+.question{
+    margin-bottom:25px;
+}
+
+.question h3{
+    margin-bottom:10px;
+}
+
+.option{
+    background:#1e293b;
+    padding:12px;
+    margin-bottom:10px;
+    border-radius:10px;
+}
+
 button{
     width:100%;
-    margin-top:12px;
-    padding:12px;
+    margin-top:15px;
+    padding:14px;
     font-size:16px;
     border:none;
-    border-radius:8px;
+    border-radius:10px;
     cursor:pointer;
 }
+
 .primary{background:#22c55e;}
 .secondary{background:#475569;}
-.result{display:none;margin-top:25px;padding:20px;border-radius:10px;}
-.level{font-size:22px;color:#38bdf8;margin-bottom:10px;}
+
+.result{
+    display:none;
+    margin-top:30px;
+    padding:20px;
+    border-radius:14px;
+}
+
+.level{
+    font-size:22px;
+    color:#38bdf8;
+    margin-bottom:10px;
+}
 </style>
 </head>
 
@@ -45,9 +91,12 @@ button{
 <div class="game-box">
 <h1>📸 Photographer Growth Game</h1>
 
-<div class="progress"><div id="progressBar" class="progress-bar"></div></div>
+<div class="progress">
+    <div id="progressBar" class="progress-bar"></div>
+</div>
 
 <form>
+
 <div class="question">
 <h3>1️⃣ Enquiries source?</h3>
 <div class="option"><input type="radio" name="q1" value="1"> Referrals</div>
@@ -57,125 +106,145 @@ button{
 
 <div class="question">
 <h3>2️⃣ Lead response time?</h3>
-<div class="option"><input type="radio" name="q2" value="1"> Late</div>
-<div class="option"><input type="radio" name="q2" value="2"> 1–2 hours</div>
-<div class="option"><input type="radio" name="q2" value="3"> 10–30 mins</div>
+<div class="option"><input type="radio" name="q2" value="1"> After few hours</div>
+<div class="option"><input type="radio" name="q2" value="2"> Within 1–2 hours</div>
+<div class="option"><input type="radio" name="q2" value="3"> Within 10–30 minutes</div>
 </div>
 
 <div class="question">
-<h3>3️⃣ After pricing?</h3>
-<div class="option"><input type="radio" name="q3" value="1"> Ghosted</div>
+<h3>3️⃣ After sending pricing?</h3>
+<div class="option"><input type="radio" name="q3" value="1"> Client disappears</div>
 <div class="option"><input type="radio" name="q3" value="2"> One follow-up</div>
-<div class="option"><input type="radio" name="q3" value="3"> Automation</div>
+<div class="option"><input type="radio" name="q3" value="3"> Automated system</div>
 </div>
 
 <div class="question">
-<h3>4️⃣ Ad strategy?</h3>
+<h3>4️⃣ Your ad strategy?</h3>
 <div class="option"><input type="radio" name="q4" value="1"> No ads</div>
-<div class="option"><input type="radio" name="q4" value="2"> Boosted</div>
-<div class="option"><input type="radio" name="q4" value="3"> Funnels</div>
+<div class="option"><input type="radio" name="q4" value="2"> Boosted posts</div>
+<div class="option"><input type="radio" name="q4" value="3"> Funnel ads</div>
 </div>
 
 <div class="question">
-<h3>5️⃣ Booking confidence?</h3>
-<div class="option"><input type="radio" name="q5" value="1"> Unpredictable</div>
-<div class="option"><input type="radio" name="q5" value="2"> Sometimes</div>
-<div class="option"><input type="radio" name="q5" value="3"> Predictable</div>
+<h3>5️⃣ Monthly booking confidence?</h3>
+<div class="option"><input type="radio" name="q5" value="1"> Not predictable</div>
+<div class="option"><input type="radio" name="q5" value="2"> Sometimes stable</div>
+<div class="option"><input type="radio" name="q5" value="3"> Predictable & scalable</div>
 </div>
 
 <button type="button" class="primary" onclick="showResult()">Reveal My Growth Level</button>
 </form>
 
 <div id="result" class="result"></div>
+
 </div>
 
 <script>
-let answers={}, score=0, level="";
+let answers = {};
+let score = 0;
+let level = "";
 
 function showResult(){
-    score=0; answers={};
+    score = 0;
+    answers = {};
+
     for(let i=1;i<=5;i++){
-        let a=document.querySelector(`input[name=q${i}]:checked`);
-        if(!a){alert("Complete all questions");return;}
-        answers["q"+i]=a.value;
-        score+=parseInt(a.value);
-        document.getElementById("progressBar").style.width=(i/5)*100+"%";
+        let a = document.querySelector(`input[name=q${i}]:checked`);
+        if(!a){
+            alert("Please answer all questions");
+            return;
+        }
+        answers["q"+i] = a.value;
+        score += parseInt(a.value);
+        document.getElementById("progressBar").style.width = (i/5)*100 + "%";
     }
 
-    let res=document.getElementById("result");
-    res.style.display="block";
+    const res = document.getElementById("result");
+    res.style.display = "block";
 
-    if(score<=7){
-        level="Survival Mode";
-        res.style.background="#7f1d1d";
-        res.innerHTML=commonBlock(
-            "You are depending on luck, referrals, and inconsistent enquiries."
+    if(score <= 7){
+        level = "Survival Mode";
+        res.style.background = "#7f1d1d";
+        res.innerHTML = buildBlock(
+            "You are currently depending on luck, referrals, or inconsistent enquiries."
         );
-    }else if(score<=11){
-        level="Struggling Scale";
-        res.style.background="#78350f";
-        res.innerHTML=commonBlock(
-            "You are putting effort, but without systems or automation."
+    }
+    else if(score <= 11){
+        level = "Struggling Scale";
+        res.style.background = "#78350f";
+        res.innerHTML = buildBlock(
+            "You are trying hard, but without a structured marketing system."
         );
-    }else{
-        level="Scale Ready";
-        res.style.background="#14532d";
-        res.innerHTML=`
+    }
+    else{
+        level = "Scale Ready";
+        res.style.background = "#14532d";
+        res.innerHTML = `
             <div class="level">🟩 Scale Ready</div>
             <p>You already have a strong foundation.</p>
-            <p><b>Next level:</b> Premium positioning & ROI-focused ads.</p>
-            <p>👏 Keep going. You are ahead of most photographers.</p>
+            <p><b>Next focus:</b> Premium positioning & ROI optimisation.</p>
+            <p>👏 You’re ahead of most photographers.</p>
         `;
         saveData("", "Scale Ready Viewed");
     }
+
+    res.scrollIntoView({behavior:"smooth"});
 }
 
-function commonBlock(text){
+function buildBlock(text){
     saveData("", "Result Viewed");
     return `
-    <div class="level">🎯 ${level}</div>
-    <p>${text}</p>
-    <p><b>Do you understand where you are stuck?</b></p>
-    <button class="primary" onclick="needSupport()">Yes, I need support for Digital Marketing</button>
-    <button class="secondary" onclick="showObjections()">Not interested</button>
-    <div id="obj" style="display:none;margin-top:10px;">
-        <p><b>What’s stopping you?</b></p>
-        <label><input type="radio" name="o" value="Budget issue"> Budget issue</label><br>
-        <label><input type="radio" name="o" value="No trust"> Not trusting digital marketing</label><br>
-        <label><input type="radio" name="o" value="Past failure"> Tried earlier, didn’t work</label><br>
-        <label><input type="radio" name="o" value="Not right time"> Not the right time</label><br>
-        <label><input type="radio" name="o" value="Just exploring"> Just exploring</label><br>
-        <button class="primary" onclick="submitObjection()">Submit</button>
-    </div>`;
+        <div class="level">🎯 ${level}</div>
+        <p>${text}</p>
+        <p><b>Do you understand where you are stuck?</b></p>
+
+        <button class="primary" onclick="needSupport()">Yes, I need support for Digital Marketing</button>
+        <button class="secondary" onclick="showObjections()">Not interested</button>
+
+        <div id="obj" style="display:none;margin-top:15px;">
+            <p><b>What’s stopping you?</b></p>
+            <label><input type="radio" name="o" value="Budget issue"> Budget issue</label><br>
+            <label><input type="radio" name="o" value="No trust"> Not trusting digital marketing</label><br>
+            <label><input type="radio" name="o" value="Past failure"> Tried earlier, didn’t work</label><br>
+            <label><input type="radio" name="o" value="Not right time"> Not the right time</label><br>
+            <label><input type="radio" name="o" value="Exploring"> Just exploring</label><br>
+            <button class="primary" onclick="submitObjection()">Submit</button>
+        </div>
+    `;
 }
 
 function showObjections(){
-    document.getElementById("obj").style.display="block";
+    document.getElementById("obj").style.display = "block";
 }
 
 function submitObjection(){
-    let o=document.querySelector("input[name=o]:checked");
-    if(!o){alert("Select one option");return;}
-    saveData(o.value,"Objection Selected");
+    let o = document.querySelector("input[name=o]:checked");
+    if(!o){
+        alert("Please select one option");
+        return;
+    }
+    saveData(o.value, "Objection Selected");
     alert("Thanks for your honest response 🙏");
 }
 
 function needSupport(){
-    saveData("","Need Support for Digital Marketing");
+    saveData("", "Need Support");
     document.getElementById("result").innerHTML += `
         <p style="margin-top:15px;color:#22c55e;">
-        ✅ Thanks for showing interest. Our team will reach out with guidance soon.
+        ✅ Thanks! You’ve taken the first step toward growth.
         </p>`;
 }
 
-function saveData(objection,action){
+function saveData(objection, action){
     fetch("https://script.google.com/macros/s/AKfycbzm1vy6dNbFseArtLEa85uagAq927P_rpvM30d-uglzsA7aBJwaL9TdCz5ZTM1OlQHu/exec",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
             ...answers,
-            score, level,
-            objection, action
+            score,
+            level,
+            objection,
+            action
         })
     });
 }
