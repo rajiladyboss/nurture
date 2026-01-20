@@ -6,14 +6,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+*{
+    box-sizing: border-box;
+}
+
+html, body{
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto !important;
+}
+
 body{
     font-family: Arial, sans-serif;
     background:#0f172a;
     color:#fff;
     padding:20px;
-    min-height:100vh;
-    overflow-y:auto;
 }
+
+.game-box{
+    max-width:750px;
+    margin: 20px auto;
+    background:#020617;
+    padding:25px;
+    border-radius:14px;
+    height: auto !important;
+    min-height: unset !important;
+    overflow: visible !important;
+}
+
 
 .game-box{
     max-width:750px;
@@ -249,6 +272,8 @@ function saveData(objection, action){
     });
 }
 </script>
+<div style="height:600px;"></div>
+<p style="text-align:center;color:#94a3b8;">End of page test</p>
 
 </body>
 </html>
