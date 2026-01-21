@@ -134,12 +134,9 @@ button{
 <div class="option"><input type="radio" name="q5" value="3"> Predictable & scalable</div>
 </div>
 
-<form>
-  <button id="submitBtn" type="button">
-    Reveal My Growth Level
-  </button>
-</form>
-
+<button type="button" class="primary" id="submitBtn">
+Reveal My Growth Level
+</button>
 
 </div>
 
@@ -147,28 +144,105 @@ button{
 </div>
 
 <script>
-document.getElementById("submitBtn").addEventListener("click", function () {
-  alert("Button clicked – JS is working");
+let answers={}, score=0, level="";
 
-  fetch("https://script.google.com/macros/s/AKfycbyku2Qa3L4FlHLiCMmcCAKyqr90QO474ly-pTOrQw__JSSoGBgLGdXJqr81AEejVT4/exec", {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      q1: "test",
-      q2: "test",
-      q3: "test",
-      q4: "test",
-      q5: "test",
-      score: 5,
-      level: "Test",
-      objection: "",
-      action: "Button Test"
-    })
-  });
-});
+document.getElementById("submitBtn").addEventListener("click", showResult);
+
+function showResult(){
+    score=0;
+    answers={};
+
+    for(let i=1;i<=5;i++){
+        let a=document.querySelector(`input[name=q${i}]:checked`);
+        if(!a){
+            alert("Please answer all questions");
+            return;
+        }
+        answers["q"+i]=a.value;
+        score+=parseInt(a.value);
+        document.getElementById("progressBar").style.width=(i/5)*100+"%";
+    }
+
+    const res=document.getElementById("result");
+    res.style.display="block";
+
+    if(score<=7){
+        level="Survival Mode";
+        res.style.background="#7f1d1d";
+        res.innerHTML=resultBlock("You are depending on luck, referrals, or inconsistent enquiries.");
+    } 
+    else if(score<=11){
+        level="Struggling Scale";
+        res.style.background="#78350f";
+        res.innerHTML=resultBlock("You are putting effort, but without a structured system.");
+    } 
+    else{
+        level="Scale Ready";
+        res.style.background="#14532d";
+        res.innerHTML=`
+            <div class="level">🟩 Scale Ready</div>
+            <p>You already have a strong foundation.</p>
+            <p>👏 You’re ahead of most photographers.</p>`;
+        saveData("", "Scale Ready Viewed");
+    }
+
+    res.scrollIntoView({behavior:"smooth"});
+}
+
+function resultBlock(text){
+    saveData("", "Result Viewed");
+    return `
+        <div class="level">🎯 ${level}</div>
+        <p>${text}</p>
+        <p><b>Do you understand where you are stuck?</b></p>
+
+        <button class="primary" onclick="needSupport()">Yes, I need support</button>
+        <button class="secondary" onclick="showObjections()">Not interested</button>
+
+        <div id="obj" style="display:none;margin-top:15px;">
+            <p><b>What’s stopping you?</b></p>
+            <label><input type="radio" name="o" value="Budget issue"> Budget issue</label><br>
+            <label><input type="radio" name="o" value="No trust"> Not trusting digital marketing</label><br>
+            <label><input type="radio" name="o" value="Past failure"> Tried earlier, didn’t work</label><br>
+            <label><input type="radio" name="o" value="Not time"> Not the right time</label><br>
+            <button class="primary" onclick="submitObjection()">Submit</button>
+        </div>`;
+}
+
+function showObjections(){
+    document.getElementById("obj").style.display="block";
+}
+
+function submitObjection(){
+    let o=document.querySelector("input[name=o]:checked");
+    if(!o){ alert("Select one option"); return; }
+    saveData(o.value,"Objection Selected");
+    alert("Thanks for your honest response 🙏");
+}
+
+function needSupport(){
+    saveData("","Need Support");
+    document.getElementById("result").innerHTML+=`
+        <p style="margin-top:15px;color:#22c55e;">
+        ✅ Thanks! Our team will guide you further.
+        </p>`;
+}
+
+function saveData(objection, action){
+    fetch("https://script.google.com/macros/s/AKfycbzm1vy6dNbFseArtLEa85uagAq927P_rpvM30d-uglzsA7aBJwaL9TdCz5ZTM1OlQHu/exec",{
+        method:"POST",
+        mode:"no-cors",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({
+            ...answers,
+            score,
+            level,
+            objection,
+            action
+        })
+    });
+}
 </script>
-
 
 </body>
 </html>
